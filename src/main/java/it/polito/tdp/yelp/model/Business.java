@@ -32,6 +32,15 @@ public class Business {
 		this.stars = stars;
 	}
 	
+	
+	
+	@Override
+	public String toString() {
+		return "\n"+ businessName;
+	}
+
+
+
 	public String getBusinessId() {
 		return businessId;
 	}

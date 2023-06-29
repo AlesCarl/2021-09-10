@@ -6,6 +6,8 @@ package it.polito.tdp.yelp;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.yelp.model.Business;
 import it.polito.tdp.yelp.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,30 +39,58 @@ public class FXMLController {
     private TextField txtX2; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbCitta"
-    private ComboBox<?> cmbCitta; // Value injected by FXMLLoader
+    private ComboBox<String> cmbCitta; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbB1"
-    private ComboBox<?> cmbB1; // Value injected by FXMLLoader
+    private ComboBox<Business> cmbB1; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbB2"
-    private ComboBox<?> cmbB2; // Value injected by FXMLLoader
+    private ComboBox<Business> cmbB2; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
     
+    
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	
+    	String citta = this.cmbCitta.getValue();
+    	
+    	model.creaGrafo(citta);
+    	
+    	this.txtResult.appendText("Numero vertici: "+model.getNumVertici());
+    	this.txtResult.appendText("\nNumero archi : "+model.getNumEdges());
+
+    	
+    	this.cmbB1.getItems().addAll(model.getAllLocali()); 
+    	this.cmbB2.getItems().addAll(model.getAllLocali()); 
     	
     }
 
     @FXML
     void doCalcolaLocaleDistante(ActionEvent event) {
+    	Business locale = this.cmbB1.getValue();
+    	
+    	this.txtResult.appendText("\nIl locale piu distante : "+model.getLocaleDistante(locale)+" - Peso: "+model.getPesoVerticeDistante() );
 
     	
     }
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
+    	
+    	Business locale = this.cmbB1.getValue();
+    	Business locale2 = this.cmbB2.getValue();
+    	double soglia= Double.parseDouble(txtX2.getText()); 
+    	
+    	model.tourGastronomico(locale, locale2, soglia); 
+    	this.txtResult.appendText("\nricorsione finita, risultato: "); 
+    	this.txtResult.appendText("\n"+model.tourGastronomico(locale, locale2, soglia) );
+    	this.txtResult.appendText(locale2+"\n");
+
+    	this.txtResult.appendText("\nkm percorsi: "+model.getKmPercorsiFinali()); 
+
+
 
     }
 
@@ -80,5 +110,21 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	setCmbox(); 
+    }
+    
+    public void setCmbox() {
+    	this.cmbCitta.getItems().addAll(model.allCities()); 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
